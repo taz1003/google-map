@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOOGLE MAP RENDER</title>
+</head>
+
+<body>
+    <!-- Need a div with id of map -->
+    <div id="map"></div>
+
+    <!-- You need your google map API key, get it for free from the google cloud console dashboard.
+    The key im using here is AIzaSyCQ9rFO8aSVU2_5FAB4Rsgr-I9-a8gwbL4 -->
+
+
+    <script>
+        // Initialize the map
+        async function initMap() {
+            try {
+                const { Map } = await google.maps.importLibrary("maps");
+                const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+                const location = { lat: 40.7128, lng: -74.006 }; // You can change this to any location
+                const map = new Map(document.getElementById("map"), {
+                    zoom: 12, // You can change this to any zoom level
+                    center: location,
+                    mapId: "DEMO_MAP_ID",
+                });
+
+                new AdvancedMarkerElement({
+                    map: map,
+                    position: location,
+                    title: "New York",
+                });
+            } catch (error) {
+                console.error("Error loading Google Maps:", error);
+                const mapContainer = document.getElementById("map");
+                if (mapContainer) {
+                    mapContainer.innerHTML = '<div class="alert alert-danger">Error loading map: ' + error.message + "</div>";
+                }
+            }
+        }
+
+        // Load Google Maps API
+        ((g) => {
+            var h,
+                a,
+                k,
+                p = "The Google Maps JavaScript API",
+                c = "google",
+                l = "importLibrary",
+                q = "__ib__",
+                m = document,
+                b = window;
+            b = b[c] || (b[c] = {});
+            var d = b.maps || (b.maps = {}),
+                r = new Set(),
+                e = new URLSearchParams(),
+                u = () =>
+                    h ||
+                    (h = new Promise(async (f, n) => {
+                        await (a = m.createElement("script"));
+                        e.set("libraries", [...r] + "");
+                        for (k in g)
+                            e.set(
+                                k.replace(/[A-Z]/g, (t) => "_" + t[0].toLowerCase()),
+                                g[k]
+                            );
+                        e.set("callback", c + ".maps." + q);
+                        a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+                        d[q] = f;
+                        a.onerror = () => (h = n(Error(p + " could not load.")));
+                        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+                        m.head.append(a);
+                    }));
+            d[l]
+                ? console.warn(p + " only loads once. Ignoring:", g)
+                : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)));
+        })({
+            key: "AIzaSyCQ9rFO8aSVU2_5FAB4Rsgr-I9-a8gwbL4",
+            v: "weekly",
+        });
+
+        // Call initMap when the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", initMap);
+
+        // Fallback in case Google Maps script fails to load entirely
+        window.addEventListener("load", function () {
+            setTimeout(function () {
+                if (!window.google || !google.maps) {
+                    const mapContainer = document.getElementById("map");
+                    if (mapContainer) {
+                        mapContainer.innerHTML =
+                            '<div class="alert alert-warning">Google Maps could not be loaded. Please check your internet connection and ensure JavaScript is enabled.</div>';
+                    }
+                }
+            }, 3000);
+        });
+    </script>
+
+</body>
+
+</html>
